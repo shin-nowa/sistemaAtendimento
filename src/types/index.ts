@@ -7,6 +7,6 @@ export interface Senha {
     numero: number;
     tipo: TipoSenha;
     dataEmissao: Date;
-    dataAtendimento: Date;
+    dataAtendimento?: Date;
     guiche?: string;
 }

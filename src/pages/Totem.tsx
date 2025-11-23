@@ -1,15 +1,24 @@
 // tela do totem onde os clientes tiram a ficha
 import React from "react";
 import './Totem.css'
-import type { TipoSenha } from "../types";
+import type { Senha, TipoSenha } from "../types";
 import { gerarNovaSenha } from "../utils/geradorSenha";
+import { entrarNaFila } from "../utils/filaUtils";
 
 const Totem: React.FC = () => {
 
     const handleGerarSenha = (tipo: TipoSenha) => {
-        const novaSenha = gerarNovaSenha(tipo);
+        const codigoSenha = gerarNovaSenha(tipo);
+        
+        const objetoSenha: Senha = {
+            id: codigoSenha,
+            tipo: tipo,
+            numero: parseInt(codigoSenha.slice(-2)), // aq ta pegando os dois ultimos numeros (ver o geradorSenha na utils)
+            dataEmissao: new Date(),
+        }
+    entrarNaFila(objetoSenha)
 
-    alert(`Senha Gerada: ${novaSenha}`);
+    alert(`Senha Gerada: ${codigoSenha}`);
     }
     return (
         <div className = "container-pagina">
