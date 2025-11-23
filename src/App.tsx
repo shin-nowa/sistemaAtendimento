@@ -1,34 +1,37 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom'
 import './App.css'
+import Totem from './pages/Totem';
+import Painel from './pages/Painel';
+import Atendente from './pages/Atendente';
+import Admin from './pages/Admin';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [] = useState(0)
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+   <BrowserRouter>
+      {/* Menu navegação*/}
+      <nav style={{ padding: '15px', background: '#eee', marginBottom: '20px', display: 'flex', gap: '15px' }}>
+        <Link to="/totem">🖥️ Totem</Link>
+        <Link to="/painel">📺 Painel TV</Link>
+        <Link to="/guiche">👨‍💼 Atendente</Link>
+        <Link to="/admin">📊 Relatórios</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/totem" element={<Totem />} />
+        <Route path="/painel" element={<Painel />} />
+        <Route path="/guiche" element={<Atendente />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/" element={
+          <div style={{textAlign: 'center', padding: '50px'}}>
+            <h1>Sistema de Atendimento</h1>
+            <p>Selecione um módulo acima para começar.</p>
+          </div>
+        } />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
