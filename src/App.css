@@ -1,7 +1,8 @@
 :root{
   --cor-primaria: #b41818; 
   --cor-secundaria: #702121;
-  --cor-fundo: #d3d3d3;
+  --cor-fundo: #1a1a1a;
+  --branco: #dfdfdf;
   --fonte-principal: 'Inter', sans-serif;
 }
 #root {
@@ -18,25 +19,30 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em var(--cor-secundaria));
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+nav{
+  display: flex;
+  gap: 20px;
+  background-color: var(--cor-fundo);
+  padding: 15px;
+  border: 2px solid transparent;
+  border-color: var(--cor-primaria);
+  border-radius: 10px;
+  text-decoration: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+a {
+  font-weight: 500;
+  color: var(--branco);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--cor-primaria);
+  animation: ease;
 }
 
 .card {

@@ -1,0 +1,10 @@
+div{
+    margin-top: 20px;
+    flex-direction: column;
+    display: flex;
+    gap: 20px;
+}
+button{
+    padding: 20px;
+
+}

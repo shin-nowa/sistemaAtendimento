@@ -12,7 +12,7 @@ function App() {
   return (
    <BrowserRouter>
       {/* Menu navegação*/}
-      <nav style={{ padding: '15px', background: '#eee', marginBottom: '20px', display: 'flex', gap: '15px' }}>
+      <nav>
         <Link to="/totem">🖥️ Totem</Link>
         <Link to="/painel">📺 Painel TV</Link>
         <Link to="/guiche">👨‍💼 Atendente</Link>
