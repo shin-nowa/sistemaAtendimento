@@ -26,6 +26,7 @@
 }
 nav{
   display: flex;
+  justify-content: center;
   gap: 20px;
   background-color: var(--cor-fundo);
   padding: 15px;
