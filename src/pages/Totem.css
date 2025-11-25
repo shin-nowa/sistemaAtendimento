@@ -1,10 +1,114 @@
-div{
-    margin-top: 20px;
-    flex-direction: column;
-    display: flex;
-    gap: 20px;
-}
-button{
-    padding: 20px;
+/* Estilos para o Totem - Design Hospitalar Clean */
 
+.container-pagina {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  background: #ffffff;
+  padding: 40px 30px;
+  box-sizing: border-box;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container-pagina h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.container-pagina > p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.container-pagina > div {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.container-pagina button {
+  padding: 25px 30px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: 2px solid #e8e8e8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.container-pagina button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border-color: #3498db;
+  background: #f8f9fa;
+}
+
+.container-pagina button:active {
+  transform: translateY(-1px);
+}
+
+/* Cores específicas para cada tipo de senha */
+.container-pagina button:nth-child(1) {
+  border-left: 5px solid #e74c3c;
+}
+
+.container-pagina button:nth-child(1):hover {
+  background: #ffeaea;
+  border-color: #e74c3c;
+  color: #c0392b;
+}
+
+.container-pagina button:nth-child(2) {
+  border-left: 5px solid #3498db;
+}
+
+.container-pagina button:nth-child(2):hover {
+  background: #e8f4f8;
+  border-color: #3498db;
+  color: #2980b9;
+}
+
+.container-pagina button:nth-child(3) {
+  border-left: 5px solid #27ae60;
+}
+
+.container-pagina button:nth-child(3):hover {
+  background: #eafaf1;
+  border-color: #27ae60;
+  color: #229954;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .container-pagina {
+    padding: 30px 20px;
+  }
+
+  .container-pagina h1 {
+    font-size: 2rem;
+  }
+
+  .container-pagina > p {
+    font-size: 1rem;
+  }
+
+  .container-pagina button {
+    padding: 20px 25px;
+    font-size: 1rem;
+  }
 }

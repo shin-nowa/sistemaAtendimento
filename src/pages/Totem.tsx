@@ -16,9 +16,15 @@ const Totem: React.FC = () => {
             numero: parseInt(codigoSenha.slice(-2)), // aq ta pegando os dois ultimos numeros (ver o geradorSenha na utils)
             dataEmissao: new Date(),
         }
-    entrarNaFila(objetoSenha)
+        entrarNaFila(objetoSenha)
 
-    alert(`Senha Gerada: ${codigoSenha}`);
+        // Dispara evento customizado para atualizar o painel quando senha é gerada
+        window.dispatchEvent(new CustomEvent('senhaGerada', { detail: objetoSenha }));
+        
+        // Dispara evento storage para atualizar outras abas/janelas
+        window.dispatchEvent(new Event('storage'));
+
+        alert(`Senha Gerada: ${codigoSenha}`);
     }
     return (
         <div className = "container-pagina">

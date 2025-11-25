@@ -1,0 +1,358 @@
+/* Estilos para o Painel de TV - Design Hospitalar Clean */
+
+.painel-tv-container {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 40px;
+  box-sizing: border-box;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Header do Painel */
+.painel-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
+  border-bottom: 3px solid #e0e0e0;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 8px;
+  padding: 25px 20px;
+}
+
+.painel-titulo {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.painel-subtitulo {
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-top: 10px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* Conteúdo Principal */
+.painel-conteudo {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 0;
+  min-height: 400px;
+}
+
+/* Estado de aguardando */
+.painel-aguardando {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.painel-mensagem-vazia {
+  text-align: center;
+  color: #7f8c8d;
+  padding: 40px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #e0e0e0;
+}
+
+.painel-icone {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 15px;
+  animation: pulse 2s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.painel-mensagem-vazia h2 {
+  font-size: 1.5rem;
+  margin: 15px 0;
+  color: #34495e;
+  font-weight: 500;
+}
+
+.painel-mensagem-vazia p {
+  font-size: 0.95rem;
+  color: #95a5a6;
+}
+
+/* Lista de Chamadas */
+.painel-lista-chamadas {
+  width: 100%;
+  max-width: 1000px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Item de Chamada Individual */
+.painel-item-chamada {
+  background: #ffffff;
+  border: 2px solid #e8e8e8;
+  border-left: 5px solid;
+  border-radius: 10px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  animation: slideIn 0.4s ease-out;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.painel-item-chamada:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border-color: #d0d0d0;
+}
+
+/* Cabeçalho do item - tipo e timestamp */
+.painel-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Tipo de Senha */
+.painel-tipo-senha {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+/* Número da Senha */
+.painel-numero-senha {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2c3e50;
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  margin: 10px 0;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #e8e8e8;
+}
+
+/* Informações adicionais */
+.painel-item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Guichê */
+.painel-guiche {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.painel-guiche strong {
+  color: #2c3e50;
+  font-size: 1rem;
+  font-weight: 700;
+  background: #ecf0f1;
+  padding: 4px 10px;
+  border-radius: 5px;
+}
+
+/* Timestamp */
+.painel-timestamp {
+  font-size: 0.8rem;
+  color: #95a5a6;
+  white-space: nowrap;
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Footer com Legenda */
+.painel-footer {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 2px solid #e8e8e8;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.painel-legenda {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  flex-wrap: wrap;
+}
+
+.painel-legenda-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.painel-legenda-cor {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Animação especial para a primeira chamada (mais recente) */
+.painel-item-chamada:nth-child(1) {
+  border-left-width: 7px;
+  background: linear-gradient(to bottom, #ffffff 0%, #f0f7ff 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-top: 3px solid #3498db;
+}
+
+.painel-item-chamada:nth-child(1) .painel-numero-senha {
+  background: #e8f4f8;
+  border-color: #3498db;
+  font-size: 2.3rem;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+  .painel-tv-container {
+    padding: 20px 15px;
+  }
+
+  .painel-titulo {
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+  }
+
+  .painel-subtitulo {
+    font-size: 0.9rem;
+  }
+
+  .painel-lista-chamadas {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .painel-item-chamada {
+    padding: 18px;
+  }
+
+  .painel-numero-senha {
+    font-size: 1.7rem;
+  }
+
+  .painel-tipo-senha {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+
+  .painel-legenda {
+    gap: 20px;
+  }
+
+  .painel-legenda-item {
+    font-size: 0.85rem;
+  }
+}
+
+/* Layout em grid para desktop - 2 colunas quando houver espaço */
+@media (min-width: 900px) {
+  .painel-lista-chamadas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Layout em 1 coluna quando houver poucas senhas */
+@media (max-width: 600px) {
+  .painel-lista-chamadas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Melhorias de acessibilidade e legibilidade */
+.painel-item-chamada {
+  background: #ffffff;
+}
+
+.painel-item-chamada:nth-child(even) {
+  background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+}
+
+/* Ajuste para cores mais suaves dos tipos de senha */
+.painel-tipo-senha[style*="background-color: #ff4444"] {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+}
+
+.painel-tipo-senha[style*="background-color: #44aa44"] {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%) !important;
+}
+
+.painel-tipo-senha[style*="background-color: #4488ff"] {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%) !important;
+}

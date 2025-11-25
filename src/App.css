@@ -1,36 +1,43 @@
 :root{
-  --cor-primaria: #b41818; 
-  --cor-secundaria: #702121;
-  --cor-fundo: #1a1a1a;
-  --branco: #dfdfdf;
-  --fonte-principal: 'Inter', sans-serif;
+  --cor-primaria: #3498db; 
+  --cor-secundaria: #2980b9;
+  --cor-fundo: #ffffff;
+  --branco: #ffffff;
+  --fonte-principal: 'Arial', 'Helvetica', sans-serif;
+  --cor-texto: #2c3e50;
+  --cor-texto-secundario: #7f8c8d;
+  --cor-borda: #e8e8e8;
+  --cor-fundo-claro: #f8f9fa;
 }
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 0;
+  background: #ffffff;
 }
 nav{
   display: flex;
   justify-content: center;
-  gap: 20px;
-  background-color: var(--cor-fundo);
-  padding: 15px;
-  border: 2px solid transparent;
-  border-color: var(--cor-primaria);
-  border-radius: 10px;
+  gap: 15px;
+  background-color: #ffffff;
+  padding: 15px 20px;
+  border-bottom: 2px solid var(--cor-borda);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   text-decoration: none;
 }
 
 a {
   font-weight: 500;
-  color: var(--branco);
-  text-decoration: inherit;
+  color: var(--cor-texto);
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
 }
 a:hover {
+  background-color: var(--cor-fundo-claro);
   color: var(--cor-primaria);
-  animation: ease;
 }
 
 .card {

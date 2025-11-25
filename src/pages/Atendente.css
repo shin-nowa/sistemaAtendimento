@@ -1,0 +1,208 @@
+/* Estilos para o Atendente - Design Hospitalar Clean */
+
+.atendente-container {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  background: #ffffff;
+  padding: 30px 40px;
+  box-sizing: border-box;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header do Atendente */
+.header-guiche {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 25px 20px;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+  border-bottom: 3px solid #e8e8e8;
+  border-radius: 8px;
+}
+
+.header-guiche h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.guiche-badge {
+  display: inline-block;
+  padding: 8px 20px;
+  background: #3498db;
+  color: #ffffff;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Área de trabalho */
+.area-trabalho {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+/* Estado livre */
+.estado-livre {
+  text-align: center;
+  padding: 50px 40px;
+  background: #f8f9fa;
+  border: 2px dashed #e8e8e8;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.estado-livre h2 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.estado-livre button {
+  padding: 18px 40px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid #3498db;
+  border-radius: 8px;
+  background: #3498db;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.estado-livre button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+  background: #2980b9;
+  border-color: #2980b9;
+}
+
+.estado-livre button:active {
+  transform: translateY(0);
+}
+
+/* Cartão de atendimento ativo */
+.cartao-atendimento-ativo {
+  text-align: center;
+  padding: 40px;
+  background: #ffffff;
+  border: 3px solid #27ae60;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.cartao-atendimento-ativo h2 {
+  font-size: 1.5rem;
+  color: #27ae60;
+  margin-bottom: 25px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.numero-senha {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #2c3e50;
+  letter-spacing: 4px;
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #e8e8e8;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.acoes-atendimento {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.acoes-atendimento button {
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.acoes-atendimento button:first-child {
+  background: #27ae60;
+  color: #ffffff;
+  border-color: #27ae60;
+}
+
+.acoes-atendimento button:first-child:hover {
+  background: #229954;
+  border-color: #229954;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.acoes-atendimento button:last-child {
+  background: #e74c3c;
+  color: #ffffff;
+  border-color: #e74c3c;
+}
+
+.acoes-atendimento button:last-child:hover {
+  background: #c0392b;
+  border-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.acoes-atendimento button:active {
+  transform: translateY(0);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .atendente-container {
+    padding: 20px 15px;
+  }
+
+  .header-guiche h1 {
+    font-size: 1.5rem;
+  }
+
+  .cartao-atendimento-ativo {
+    padding: 30px 20px;
+  }
+
+  .numero-senha {
+    font-size: 2.2rem;
+  }
+
+  .acoes-atendimento {
+    flex-direction: column;
+  }
+
+  .acoes-atendimento button {
+    width: 100%;
+  }
+}
+

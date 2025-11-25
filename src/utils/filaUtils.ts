@@ -17,7 +17,7 @@ export const lerFila = (): Senha [] => {
 
 // logica pra prioridade
 
-export const buscarProximaSenha = (): Senha | null => {
+export const buscarProximaSenha = (guiche?: string): Senha | null => {
     let fila = lerFila()
     if (fila.length === 0) return null
 
@@ -38,8 +38,15 @@ export const buscarProximaSenha = (): Senha | null => {
         const novaFila = fila.filter(s => s.id !== proxima!.id) // filter é pra filtrar e criar um arrayg novop de acordo com o teste feito, aq a gente ta removendo a senha chamada da fila de esprea
         localStorage.setItem(CHAVE_FILA, JSON.stringify(novaFila))
     
-        adicionarAoHistorico(proxima)
-    return proxima
+        // Adiciona informações de atendimento quando a senha é chamada
+        const senhaChamada: Senha = {
+            ...proxima,
+            dataAtendimento: new Date(),
+            guiche: guiche || '01'
+        }
+        
+        adicionarAoHistorico(senhaChamada)
+        return senhaChamada
     }
     return null
 }
@@ -47,5 +54,19 @@ const adicionarAoHistorico = (senha: Senha) => {
     const historico = JSON.parse(localStorage.getItem(CHAVE_ULTIMA_CHAMADA) || '[]')
     const novoHistorico = [senha, ...historico].slice(0, 5);
     localStorage.setItem(CHAVE_ULTIMA_CHAMADA, JSON.stringify(novoHistorico))
+}
+
+// ler histórico das últimas 5 senhas chamadas
+export const lerHistoricoChamadas = (): Senha[] => {
+    const dados = localStorage.getItem(CHAVE_ULTIMA_CHAMADA)
+    if (!dados) return []
+    
+    const historico = JSON.parse(dados)
+    // Converter dataAtendimento de string para Date se necessário
+    return historico.map((senha: any) => ({
+        ...senha,
+        dataEmissao: new Date(senha.dataEmissao),
+        dataAtendimento: senha.dataAtendimento ? new Date(senha.dataAtendimento) : undefined
+    }))
 }
 

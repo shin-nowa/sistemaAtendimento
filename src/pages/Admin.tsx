@@ -1,6 +1,7 @@
-// tela de admin pra ver as infosimport React from 'react';
+// tela de admin pra ver as infos
 import React from "react";
 import '../App.css'
+import './Admin.css'
 
 const Admin: React.FC = () => {
   return (

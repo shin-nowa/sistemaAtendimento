@@ -1,6 +1,7 @@
 //tela do atendente com os controles etc
 import React, { useState } from 'react';
 import "../App.css"
+import './Atendente.css'
 import type { Senha } from '../types';
 import { buscarProximaSenha } from '../utils/filaUtils';
 
@@ -9,10 +10,16 @@ const Atendente: React.FC = () => {
   const [cronometro, setCronometro] = useState<number>(0); // pra ter o tempo medio, aq ainda n usei
 
   const handleChamarProximo = () =>{
-    const proxima = buscarProximaSenha();
+    const proxima = buscarProximaSenha('01'); // Passa o número do guichê
     if (proxima) {
       setSenhaAtual(proxima)
       setCronometro(0) // reseta o cronoemtro
+      
+      // Dispara evento customizado para atualizar o painel na mesma janela
+      window.dispatchEvent(new CustomEvent('senhaChamada', { detail: proxima }));
+      
+      // Dispara evento storage para atualizar outras abas/janelas
+      window.dispatchEvent(new Event('storage'));
     } else {
       alert("Não há ninguém na fila")
     }
