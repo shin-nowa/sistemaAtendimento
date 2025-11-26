@@ -1,4 +1,4 @@
-import type { Senha, TipoSenha } from "../types";
+import type { Senha } from "../types";
 
 const CHAVE_FILA = 'fila_espera'
 const CHAVE_ULTIMA_CHAMADA = 'historico_chamada'
