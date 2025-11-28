@@ -4,6 +4,7 @@ import './Totem.css'
 import type { Senha, TipoSenha } from "../types";
 import { gerarNovaSenha } from "../utils/geradorSenha";
 import { entrarNaFila } from "../utils/filaUtils";
+import { salvarNovaSenha } from "../utils/storage";
 
 const Totem: React.FC = () => {
 
@@ -17,6 +18,7 @@ const Totem: React.FC = () => {
             dataEmissao: new Date(),
         }
         entrarNaFila(objetoSenha)
+        salvarNovaSenha(objetoSenha)
 
         // Dispara evento customizado para atualizar o painel quando senha é gerada
         window.dispatchEvent(new CustomEvent('senhaGerada', { detail: objetoSenha }));

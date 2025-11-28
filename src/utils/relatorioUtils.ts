@@ -1,200 +1,184 @@
 import type { Senha, RelatorioGeral, RelatorioPorTipo, RelatorioGuiche, RelatorioHorario, RelatorioCompleto } from '../types/index';
+import { lerTodasAsSenhas } from './storage'; 
 
-// Simular dados de senhassd
-export const gerarDadosMock = (): Senha[] => {
-  const tipos: ('SP' | 'SG' | 'SE')[] = ['SP', 'SG', 'SE'];
-  const guiches = ['G1', 'G2', 'G3', 'G4', 'G5'];
-  const senhas: Senha[] = [];
-  
-  // Gerar 100 senhas paara demonstração
-  for (let i = 0; i < 100; i++) {
-    const dataEmissao = new Date();
-    dataEmissao.setHours(Math.floor(Math.random() * 24));
-    dataEmissao.setMinutes(Math.floor(Math.random() * 60));
-    dataEmissao.setSeconds(0);
-
-    const tipo = tipos[Math.floor(Math.random() * tipos.length)];
-    const dataAtendimento = new Date(dataEmissao);
-    dataAtendimento.setMinutes(dataAtendimento.getMinutes() + Math.floor(Math.random() * 30) + 1);
-    const tempoEspera = Math.floor((dataAtendimento.getTime() - dataEmissao.getTime()) / (1000 * 60));
-
-    senhas.push({
-      id: `SENHA-${i + 1}`,
-      numero: 1001 + i,
-      tipo,
-      dataEmissao,
-      dataAtendimento: Math.random() > 0.1 ? dataAtendimento : undefined,
-      guiche: Math.random() > 0.1 ? guiches[Math.floor(Math.random() * guiches.length)] : undefined,
-      tempoEspera: tempoEspera > 0 ? tempoEspera : 0,
-    });
-  }
-
-  return senhas;
+// Função auxiliar para calcular diferença em minutos com segurança
+const diffMinutos = (inicio: Date | string, fim: Date | string): number => {
+  const dInicio = new Date(inicio).getTime();
+  const dFim = new Date(fim).getTime();
+  if (isNaN(dInicio) || isNaN(dFim)) return 0;
+  return (dFim - dInicio) / (1000 * 60);
 };
 
-// Recuperar dados do localStorage
-export const obterDadosSenhas = (): Senha[] => {
-  const dados = localStorage.getItem('senhas');
-  if (dados) {
-    try {
-      return JSON.parse(dados);
-    } catch {
-      return gerarDadosMock();
-    }
-  }
-  return gerarDadosMock();
-};
-
-// Gerar relatório geral
+// ==========================================
+// 1. GERAR RELATÓRIO GERAL
+// ==========================================
 export const gerarRelatorioGeral = (senhas: Senha[], dataInicio: Date, dataFim: Date): RelatorioGeral => {
-  const senhasFiltradas = senhas.filter(s => {
-    const data = new Date(s.dataEmissao);
-    return data >= dataInicio && data <= dataFim;
+  
+  // Filtra apenas as que foram atendidas
+  const atendidas = senhas.filter(s => s.dataAtendimento);
+  const countAtendidas = atendidas.length;
+  const countNaoAtendidas = senhas.length - countAtendidas;
+
+  // Cálculo do Tempo Médio de Espera (Emissão -> Atendimento)
+  let somaEspera = 0;
+  atendidas.forEach(s => {
+    if (s.dataAtendimento) {
+      somaEspera += diffMinutos(s.dataEmissao, s.dataAtendimento);
+    }
   });
 
-  const atendidas = senhasFiltradas.filter(s => s.dataAtendimento).length;
-  const naoAtendidas = senhasFiltradas.length - atendidas;
-  
-  const tempoMedioEspera = senhasFiltradas.length > 0
-    ? senhasFiltradas.reduce((acc, s) => acc + (s.tempoEspera || 0), 0) / senhasFiltradas.length
-    : 0;
-
-  const tempoMedioAtendimento = atendidas > 0
-    ? senhasFiltradas
-        .filter(s => s.dataAtendimento)
-        .reduce((acc, s) => {
-          if (s.dataAtendimento) {
-            const tempo = (new Date(s.dataAtendimento).getTime() - new Date(s.dataEmissao).getTime()) / (1000 * 60);
-            return acc + tempo;
-          }
-          return acc;
-        }, 0) / atendidas
-    : 0;
+  const tempoMedioEspera = countAtendidas > 0 ? somaEspera / countAtendidas : 0;
 
   return {
     dataInicio,
     dataFim,
-    totalSenhas: senhasFiltradas.length,
-    senhasAtendidas: atendidas,
-    senhasNaoAtendidas: naoAtendidas,
-    tempoMedioEspera: Math.round(tempoMedioEspera * 10) / 10,
-    tempoMedioAtendimento: Math.round(tempoMedioAtendimento * 10) / 10,
+    totalSenhas: senhas.length,
+    senhasAtendidas: countAtendidas,
+    senhasNaoAtendidas: countNaoAtendidas,
+    tempoMedioEspera: parseFloat(tempoMedioEspera.toFixed(1)), // Arredonda para 1 casa decimal
+    tempoMedioAtendimento: 0 // Precisaríamos da data de finalização para calcular isso real
   };
 };
 
-// Gerar relatório por tipo de senha
+// ==========================================
+// 2. GERAR RELATÓRIO POR TIPO (SP, SG, SE)
+// ==========================================
 export const gerarRelatorioPorTipo = (senhas: Senha[]): RelatorioPorTipo[] => {
   const tipos: ('SP' | 'SG' | 'SE')[] = ['SP', 'SG', 'SE'];
   
   return tipos.map(tipo => {
-    const senhasTipo = senhas.filter(s => s.tipo === tipo);
-    const atendidas = senhasTipo.filter(s => s.dataAtendimento).length;
+    const senhasDoTipo = senhas.filter(s => s.tipo === tipo);
+    const atendidas = senhasDoTipo.filter(s => s.dataAtendimento);
     
-    const tempoMedioEspera = senhasTipo.length > 0
-      ? senhasTipo.reduce((acc, s) => acc + (s.tempoEspera || 0), 0) / senhasTipo.length
-      : 0;
+    let somaEspera = 0;
+    atendidas.forEach(s => {
+      if (s.dataAtendimento) {
+        somaEspera += diffMinutos(s.dataEmissao, s.dataAtendimento);
+      }
+    });
+
+    const mediaEspera = atendidas.length > 0 ? somaEspera / atendidas.length : 0;
+    const percentual = senhasDoTipo.length > 0 ? (atendidas.length / senhasDoTipo.length) * 100 : 0;
 
     return {
       tipo,
-      total: senhasTipo.length,
-      atendidas,
-      naoAtendidas: senhasTipo.length - atendidas,
-      percentualAtendimento: senhasTipo.length > 0 ? Math.round((atendidas / senhasTipo.length) * 100) : 0,
-      tempoMedioEspera: Math.round(tempoMedioEspera * 10) / 10,
+      total: senhasDoTipo.length,
+      atendidas: atendidas.length,
+      naoAtendidas: senhasDoTipo.length - atendidas.length,
+      percentualAtendimento: Math.round(percentual),
+      tempoMedioEspera: parseFloat(mediaEspera.toFixed(1)),
     };
   });
 };
 
-// Gerar relatório por guichê
+// ==========================================
+// 3. GERAR RELATÓRIO POR GUICHÊ
+// ==========================================
 export const gerarRelatorioPorGuiche = (senhas: Senha[]): RelatorioGuiche[] => {
-  const guiches = new Set(senhas.map(s => s.guiche).filter(g => g !== undefined) as string[]);
+  // Pega apenas senhas que têm guichê definido
+  const senhasComGuiche = senhas.filter(s => s.guiche);
   
-  return Array.from(guiches).map(guiche => {
-    const senhasGuiche = senhas.filter(s => s.guiche === guiche);
-    
-    const tempoMedioAtendimento = senhasGuiche.length > 0
-      ? senhasGuiche.reduce((acc, s) => acc + (s.tempoEspera || 0), 0) / senhasGuiche.length
-      : 0;
+  // Cria um Set para pegar guichês únicos (Ex: "G1", "01", "G2")
+  const guichesUnicos = Array.from(new Set(senhasComGuiche.map(s => s.guiche as string)));
 
+  return guichesUnicos.map(guiche => {
+    const senhasDoGuiche = senhasComGuiche.filter(s => s.guiche === guiche);
+    
     return {
       guiche,
-      totalAtendimentos: senhasGuiche.length,
-      senhasProcessadas: senhasGuiche,
-      tempoMedioAtendimento: Math.round(tempoMedioAtendimento * 10) / 10,
+      totalAtendimentos: senhasDoGuiche.length,
+      senhasProcessadas: senhasDoGuiche,
+      tempoMedioAtendimento: 0, // Implementar futuramente
     };
   });
 };
 
-// Gerar relatório por horário
+// ==========================================
+// 4. GERAR RELATÓRIO POR HORÁRIO
+// ==========================================
 export const gerarRelatorioPorHorario = (senhas: Senha[]): RelatorioHorario[] => {
   const horarios: { [key: string]: Senha[] } = {};
   
   senhas.forEach(senha => {
+    // Extrai a hora (08, 09, 14...)
     const hora = new Date(senha.dataEmissao).getHours().toString().padStart(2, '0');
     const chave = `${hora}:00`;
     
-    if (!horarios[chave]) {
-      horarios[chave] = [];
-    }
+    if (!horarios[chave]) horarios[chave] = [];
     horarios[chave].push(senha);
   });
 
-  return Object.keys(horarios)
-    .sort()
-    .map(hora => {
-      const senhasHora = horarios[hora];
-      const atendidas = senhasHora.filter(s => s.dataAtendimento).length;
-      const tempoMedioEspera = senhasHora.length > 0
-        ? senhasHora.reduce((acc, s) => acc + (s.tempoEspera || 0), 0) / senhasHora.length
-        : 0;
-
-      return {
-        hora,
-        totalSenhas: senhasHora.length,
-        senhasAtendidas: atendidas,
-        tempoMedioEspera: Math.round(tempoMedioEspera * 10) / 10,
-      };
+  return Object.keys(horarios).sort().map(hora => {
+    const lista = horarios[hora];
+    const atendidas = lista.filter(s => s.dataAtendimento);
+    
+    let somaEspera = 0;
+    atendidas.forEach(s => {
+        if (s.dataAtendimento) somaEspera += diffMinutos(s.dataEmissao, s.dataAtendimento);
     });
+
+    const media = atendidas.length > 0 ? somaEspera / atendidas.length : 0;
+
+    return {
+      hora,
+      totalSenhas: lista.length,
+      senhasAtendidas: atendidas.length,
+      tempoMedioEspera: parseFloat(media.toFixed(1))
+    };
+  });
 };
 
-// Gerar relatório completo
+// ==========================================
+// FUNÇÃO PRINCIPAL (CHAMADA PELO ADMIN)
+// ==========================================
 export const gerarRelatorioCompleto = (dataInicio: Date, dataFim: Date): RelatorioCompleto => {
-  const senhas = obterDadosSenhas();
+  console.group("🔎 Debug Relatório");
+  console.log("1. Buscando dados do Storage...");
   
-  const senhasFiltradas = senhas.filter(s => {
-    const data = new Date(s.dataEmissao);
-    return data >= dataInicio && data <= dataFim;
+  const todasSenhas = lerTodasAsSenhas();
+  console.log(`   Encontradas ${todasSenhas.length} senhas no total.`);
+
+  // AJUSTE DE DATAS (CRUCIAL)
+  // Data Inicio vira 00:00:00.000 do dia selecionado
+  const inicio = new Date(dataInicio);
+  inicio.setHours(0, 0, 0, 0);
+
+  // Data Fim vira 23:59:59.999 do dia selecionado
+  const fim = new Date(dataFim);
+  fim.setHours(23, 59, 59, 999);
+
+  console.log("2. Filtrando por data:", { inicio: inicio.toLocaleString(), fim: fim.toLocaleString() });
+
+  const senhasFiltradas = todasSenhas.filter(s => {
+    const dataEmissao = new Date(s.dataEmissao);
+    return dataEmissao >= inicio && dataEmissao <= fim;
   });
 
+  console.log(`   Senhas após filtro: ${senhasFiltradas.length}`);
+  console.groupEnd();
+
   return {
-    geral: gerarRelatorioGeral(senhasFiltradas, dataInicio, dataFim),
+    geral: gerarRelatorioGeral(senhasFiltradas, inicio, fim),
     porTipo: gerarRelatorioPorTipo(senhasFiltradas),
     porGuiche: gerarRelatorioPorGuiche(senhasFiltradas),
     porHorario: gerarRelatorioPorHorario(senhasFiltradas),
   };
 };
 
-// Exportar relatório como CSV
+// ==========================================
+// EXPORTAÇÃO CSV
+// ==========================================
 export const exportarCSV = (relatorio: RelatorioCompleto, nomeArquivo: string = 'relatorio.csv') => {
-  let csv = 'RELATÓRIO GERAL\n';
-  csv += `Data Início,${relatorio.geral.dataInicio}\n`;
-  csv += `Data Fim,${relatorio.geral.dataFim}\n`;
-  csv += `Total de Senhas,${relatorio.geral.totalSenhas}\n`;
-  csv += `Senhas Atendidas,${relatorio.geral.senhasAtendidas}\n`;
-  csv += `Senhas Não Atendidas,${relatorio.geral.senhasNaoAtendidas}\n`;
-  csv += `Tempo Médio Espera,${relatorio.geral.tempoMedioEspera} min\n`;
-  csv += `Tempo Médio Atendimento,${relatorio.geral.tempoMedioAtendimento} min\n\n`;
+  let csv = 'RELATORIO GERAL\n';
+  csv += `Periodo,${relatorio.geral.dataInicio.toLocaleDateString()} ate ${relatorio.geral.dataFim?.toLocaleDateString()}\n`;
+  csv += `Total Senhas,${relatorio.geral.totalSenhas}\n`;
+  csv += `Atendidas,${relatorio.geral.senhasAtendidas}\n`;
+  csv += `Nao Atendidas,${relatorio.geral.senhasNaoAtendidas}\n`;
+  csv += `TM Espera (min),${relatorio.geral.tempoMedioEspera}\n\n`;
 
-  csv += 'RELATÓRIO POR TIPO\n';
-  csv += 'Tipo,Total,Atendidas,Não Atendidas,Percentual Atendimento,Tempo Médio Espera\n';
+  csv += 'POR TIPO\nTipo,Total,Atendidas,TM Espera\n';
   relatorio.porTipo.forEach(r => {
-    csv += `${r.tipo},${r.total},${r.atendidas},${r.naoAtendidas},${r.percentualAtendimento}%,${r.tempoMedioEspera} min\n`;
-  });
-
-  csv += '\nRELATÓRIO POR GUICHÊ\n';
-  csv += 'Guichê,Total de Atendimentos,Tempo Médio Atendimento\n';
-  relatorio.porGuiche.forEach(r => {
-    csv += `${r.guiche},${r.totalAtendimentos},${r.tempoMedioAtendimento} min\n`;
+    csv += `${r.tipo},${r.total},${r.atendidas},${r.tempoMedioEspera}\n`;
   });
 
   const blob = new Blob([csv], { type: 'text/csv' });
@@ -204,11 +188,4 @@ export const exportarCSV = (relatorio: RelatorioCompleto, nomeArquivo: string = 
   a.download = nomeArquivo;
   a.click();
   window.URL.revokeObjectURL(url);
-};
-
-// Exportar como PDF (usando HTML2PDF)
-export const exportarPDF = (relatorio: RelatorioCompleto) => {
-  // Nota: Para usar esta função, você precisará instalar html2pdf com npm
-  console.log('Para exportar PDF, instale: npm install html2pdf.js');
-  console.log('Relatório pronto para exportação:', relatorio);
 };

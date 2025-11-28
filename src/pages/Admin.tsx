@@ -1,34 +1,48 @@
-// tela de admin pra ver as infos
-import React, { useState, useMemo, useEffect } from "react";
-import '../App.css'
-import './Admin.css'
+import React, { useState, useMemo } from "react";
+import '../App.css';
+import './Admin.css';
+// Agora importamos apenas as funções de relatório. 
+// A inicialização do banco é automática dentro do storage.ts, não precisa mais do useEffect.
 import { gerarRelatorioCompleto, exportarCSV } from '../utils/relatorioUtils';
-import { inicializarSistema } from '../utils/dadosManager';
 
 const Admin: React.FC = () => {
+  // Define a data inicial como 7 dias atrás e a final como hoje
   const [dataInicio, setDataInicio] = useState<string>(
     new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0]
   );
   const [dataFim, setDataFim] = useState<string>(new Date().toISOString().split('T')[0]);
+  
   const [abaSelecionada, setAbaSelecionada] = useState<'geral' | 'tipo' | 'guiche' | 'horario'>('geral');
+  
+  // Adicionei um estado para forçar atualização manual se quiser (botão refresh)
+  const [triggerUpdate, setTriggerUpdate] = useState(0);
 
-  // Inicializar dados na primeira carga
-  useEffect(() => {
-    inicializarSistema();
-  }, []);
-
+  // O useMemo recalcula o relatório sempre que as datas mudam ou clicamos em atualizar
   const relatorio = useMemo(() => {
+    // Aqui ele chama o seu novo relatorioUtils, que chama o storage.ts, que lê o localStorage real
     return gerarRelatorioCompleto(new Date(dataInicio), new Date(dataFim));
-  }, [dataInicio, dataFim]);
+  }, [dataInicio, dataFim, triggerUpdate]);
 
   const handleExportarCSV = () => {
     const nomeArquivo = `relatorio_${dataInicio}_${dataFim}.csv`;
     exportarCSV(relatorio, nomeArquivo);
   };
 
+  const handleAtualizar = () => {
+    setTriggerUpdate(prev => prev + 1);
+  };
+
   return (
     <div className="container-admin">
-      <h1>📊 Relatórios de Gestão</h1>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <h1>📊 Relatórios de Gestão</h1>
+        <button 
+          onClick={handleAtualizar}
+          style={{padding: '10px', cursor: 'pointer', background: '#3498db', color: 'white', border: 'none', borderRadius: '5px'}}
+        >
+          🔄 Atualizar Dados
+        </button>
+      </div>
 
       {/* Seção de Filtros */}
       <div className="secao-filtros">
@@ -135,7 +149,7 @@ const Admin: React.FC = () => {
                     <th>Atendidas</th>
                     <th>Não Atendidas</th>
                     <th>Taxa Atendimento</th>
-                    <th>Tempo Médio Espera</th>
+                    <th>TM Espera</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -191,7 +205,7 @@ const Admin: React.FC = () => {
                     <th>Horário</th>
                     <th>Total de Senhas</th>
                     <th>Senhas Atendidas</th>
-                    <th>Tempo Médio Espera</th>
+                    <th>TM Espera</th>
                   </tr>
                 </thead>
                 <tbody>

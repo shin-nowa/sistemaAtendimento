@@ -1,4 +1,5 @@
 import type { Senha } from "../types";
+import { atualizarSenha } from "./storage";
 
 const CHAVE_FILA = 'fila_espera'
 const CHAVE_ULTIMA_CHAMADA = 'historico_chamada'
@@ -46,6 +47,7 @@ export const buscarProximaSenha = (guiche?: string): Senha | null => {
         }
         
         adicionarAoHistorico(senhaChamada)
+        atualizarSenha(senhaChamada)
         return senhaChamada
     }
     return null
