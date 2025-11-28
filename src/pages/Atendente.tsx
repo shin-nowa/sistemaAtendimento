@@ -7,13 +7,13 @@ import { buscarProximaSenha } from '../utils/filaUtils';
 
 const Atendente: React.FC = () => {
   const [senhaAtual, setSenhaAtual] = useState<Senha | null>(null)
-  const [cronometro, setCronometro] = useState<number>(0); // pra ter o tempo medio, aq ainda n usei
+  // const [cronometro, setCronometro] = useState<number>(0); // TODO: implementar cronômetro para tempo médio
 
   const handleChamarProximo = () =>{
     const proxima = buscarProximaSenha('01'); // Passa o número do guichê
     if (proxima) {
       setSenhaAtual(proxima)
-      setCronometro(0) // reseta o cronoemtro
+      // setCronometro(0) // reseta o cronômetro
       
       // Dispara evento customizado para atualizar o painel na mesma janela
       window.dispatchEvent(new CustomEvent('senhaChamada', { detail: proxima }));
