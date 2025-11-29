@@ -8,6 +8,7 @@ export interface Senha {
     tipo: TipoSenha;
     dataEmissao: Date;
     dataAtendimento?: Date;
+    dataInicioAtendimento? : Date;
     guiche?: string;
     tempoEspera?: number; // em minutos
 }

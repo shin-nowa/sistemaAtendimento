@@ -9,25 +9,36 @@ const diffMinutos = (inicio: Date | string, fim: Date | string): number => {
   return (dFim - dInicio) / (1000 * 60);
 };
 
-// ==========================================
 // 1. GERAR RELATÓRIO GERAL
-// ==========================================
+
 export const gerarRelatorioGeral = (senhas: Senha[], dataInicio: Date, dataFim: Date): RelatorioGeral => {
-  
-  // Filtra apenas as que foram atendidas
+
   const atendidas = senhas.filter(s => s.dataAtendimento);
   const countAtendidas = atendidas.length;
   const countNaoAtendidas = senhas.length - countAtendidas;
 
-  // Cálculo do Tempo Médio de Espera (Emissão -> Atendimento)
   let somaEspera = 0;
+  let somaAtendimento = 0;
+  let countComTempoAtendimento = 0;
+
   atendidas.forEach(s => {
-    if (s.dataAtendimento) {
-      somaEspera += diffMinutos(s.dataEmissao, s.dataAtendimento);
+    // 1. Cálculo Real do Tempo de Espera (Chegada até ser chamado)
+    if (s.dataInicioAtendimento) {
+       somaEspera += diffMinutos(s.dataEmissao, s.dataInicioAtendimento);
+    } else if (s.dataAtendimento) {
+       // Fallback se for uma senha antiga sem data de início
+       somaEspera += diffMinutos(s.dataAtendimento, s.dataEmissao);
+    }
+
+    // 2. Cálculo Tempo de Atendimento (Início até Fim)
+    if (s.dataInicioAtendimento && s.dataAtendimento) {
+      somaAtendimento += diffMinutos(s.dataInicioAtendimento, s.dataAtendimento);
+      countComTempoAtendimento++;
     }
   });
 
   const tempoMedioEspera = countAtendidas > 0 ? somaEspera / countAtendidas : 0;
+  const tempoMedioAtendimento = countComTempoAtendimento > 0 ? somaAtendimento / countComTempoAtendimento : 0;
 
   return {
     dataInicio,
@@ -35,14 +46,13 @@ export const gerarRelatorioGeral = (senhas: Senha[], dataInicio: Date, dataFim: 
     totalSenhas: senhas.length,
     senhasAtendidas: countAtendidas,
     senhasNaoAtendidas: countNaoAtendidas,
-    tempoMedioEspera: parseFloat(tempoMedioEspera.toFixed(1)), // Arredonda para 1 casa decimal
-    tempoMedioAtendimento: 0 // Precisaríamos da data de finalização para calcular isso real
+    tempoMedioEspera: parseFloat(tempoMedioEspera.toFixed(1)),
+    tempoMedioAtendimento: parseFloat(tempoMedioAtendimento.toFixed(1))
   };
 };
 
-// ==========================================
 // 2. GERAR RELATÓRIO POR TIPO (SP, SG, SE)
-// ==========================================
+
 export const gerarRelatorioPorTipo = (senhas: Senha[]): RelatorioPorTipo[] => {
   const tipos: ('SP' | 'SG' | 'SE')[] = ['SP', 'SG', 'SE'];
   
@@ -75,27 +85,42 @@ export const gerarRelatorioPorTipo = (senhas: Senha[]): RelatorioPorTipo[] => {
 // 3. GERAR RELATÓRIO POR GUICHÊ
 // ==========================================
 export const gerarRelatorioPorGuiche = (senhas: Senha[]): RelatorioGuiche[] => {
-  // Pega apenas senhas que têm guichê definido
+  // Pega apenas senhas que têm guichê definido e foram atendidas
   const senhasComGuiche = senhas.filter(s => s.guiche);
   
-  // Cria um Set para pegar guichês únicos (Ex: "G1", "01", "G2")
+  // Cria um Set para pegar guichês únicos (Ex: "01", "02")
   const guichesUnicos = Array.from(new Set(senhasComGuiche.map(s => s.guiche as string)));
 
   return guichesUnicos.map(guiche => {
+    // Filtra senhas deste guichê específico
     const senhasDoGuiche = senhasComGuiche.filter(s => s.guiche === guiche);
     
+    //LÓGICA DE CÁLCULO
+    let somaAtendimento = 0;
+    let countAtendimento = 0;
+
+    senhasDoGuiche.forEach(s => {
+      // Verifica se tem Início E Fim para calcular a duração
+      if (s.dataInicioAtendimento && s.dataAtendimento) {
+        somaAtendimento += diffMinutos(s.dataInicioAtendimento, s.dataAtendimento);
+        countAtendimento++;
+      }
+    });
+
+    const media = countAtendimento > 0 ? somaAtendimento / countAtendimento : 0;
+    // -------------------------------
+
     return {
       guiche,
       totalAtendimentos: senhasDoGuiche.length,
       senhasProcessadas: senhasDoGuiche,
-      tempoMedioAtendimento: 0, // Implementar futuramente
+      tempoMedioAtendimento: parseFloat(media.toFixed(1)), // Agora retorna o decimal correto (ex: 2.2)
     };
   });
 };
 
-// ==========================================
+
 // 4. GERAR RELATÓRIO POR HORÁRIO
-// ==========================================
 export const gerarRelatorioPorHorario = (senhas: Senha[]): RelatorioHorario[] => {
   const horarios: { [key: string]: Senha[] } = {};
   
