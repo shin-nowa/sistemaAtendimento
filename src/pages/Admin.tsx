@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from "react";
 import '../App.css';
 import './Admin.css';
-// Agora importamos apenas as funções de relatório. 
-// A inicialização do banco é automática dentro do storage.ts, não precisa mais do useEffect.
 import { gerarRelatorioCompleto, exportarCSV } from '../utils/relatorioUtils';
 
 const Admin: React.FC = () => {
@@ -18,9 +16,10 @@ const Admin: React.FC = () => {
   const [triggerUpdate, setTriggerUpdate] = useState(0);
 
   // O useMemo recalcula o relatório sempre que as datas mudam ou clicamos em atualizar
-  const relatorio = useMemo(() => {
-    // Aqui ele chama o seu novo relatorioUtils, que chama o storage.ts, que lê o localStorage real
-    return gerarRelatorioCompleto(new Date(dataInicio), new Date(dataFim));
+const relatorio = useMemo(() => {
+    // Passamos a string direto (ex: "2025-11-30")
+    // A função lá dentro vai saber lidar com ela
+    return gerarRelatorioCompleto(dataInicio, dataFim);
   }, [dataInicio, dataFim, triggerUpdate]);
 
   const handleExportarCSV = () => {
